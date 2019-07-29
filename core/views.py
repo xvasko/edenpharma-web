@@ -47,20 +47,45 @@ class ProductDelete(DeleteView):
     success_url = reverse_lazy('core:products')
 
 
-@login_required
-def customers(request):
-    context = {
-        'customers': Customer.objects.all()
-    }
-    return render(request, 'core/customers.html', context)
-
-
 # @login_required
-# def orders(request):
+# def customers(request):
 #     context = {
-#         'orders': Order.objects.all()
+#         'customers': Customer.objects.all()
 #     }
-#     return render(request, 'core/orders.html', context)
+#     return render(request, 'core/customers.html', context)
+
+
+class CustomerView(ListView):
+    model = Customer
+    template_name = 'core/customers.html'
+
+
+class CustomerDetailView(DetailView):
+    model = Customer
+    template_name = 'core/customer.html'
+
+
+class CustomerCreate(CreateView):
+    model = Customer
+    fields = ['name']
+    success_url = reverse_lazy('core:customers')
+
+
+class CustomerUpdate(UpdateView):
+    model = Customer
+    fields = ['name']
+    success_url = reverse_lazy('core:customers')
+
+
+class CustomerDelete(DeleteView):
+    model = Customer
+    success_url = reverse_lazy('core:customers')
+
+
+
+
+
+
 
 
 class OrderView(ListView):

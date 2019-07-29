@@ -8,6 +8,9 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('core:customer', kwargs={'pk': self.id})
+
 
 class Product(models.Model):
     title = models.CharField(max_length=128)

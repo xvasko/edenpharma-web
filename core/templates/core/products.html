@@ -15,7 +15,7 @@
         </thead>
         {% for product in object_list %}
             <tr>
-                <td><a href="{% url 'core:product' pk=product.id %}">{{ product }}</a></td>
+                <td><a href="{% url 'core:product-detail' product.id %}">{{ product }}</a></td>
                 <td><a href="{% url "core:product-update" product.id %}">edit</a></td>
                 <td><a href="{% url "core:product-delete" product.id %}">delete</a></td>
             </tr>
