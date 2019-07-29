@@ -2,9 +2,25 @@
 
 {% block content %}
     <h1>Zoznam produktov</h1>
-<ul>
-    {% for product in object_list %}
-        <li><a href="{% url 'core:product' slug=product.slug %}">{{ product }}</a></li>
-    {% endfor %}
-</ul>
+    <br><br>
+    <a href="{% url 'core:product-create' %}">Nový produkt</a>
+    <br><br>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>Produkt</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        {% for product in object_list %}
+            <tr>
+                <td><a href="{% url 'core:product' pk=product.id %}">{{ product }}</a></td>
+                <td><a href="{% url "core:product-update" product.id %}">edit</a></td>
+                <td><a href="{% url "core:product-delete" product.id %}">delete</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
 {% endblock %}

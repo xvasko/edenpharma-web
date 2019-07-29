@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from core.models import Product, Customer, Order, OrderProduct
 
@@ -28,8 +30,21 @@ class ProductDetailView(DetailView):
     template_name = 'core/product.html'
 
 
-def add_product_to_order(request, slug):
-    product = get_object_or_404(Product, slug=slug)
+class ProductCreate(CreateView):
+    model = Product
+    fields = ['title']
+    success_url = reverse_lazy('core:products')
+
+
+class ProductUpdate(UpdateView):
+    model = Product
+    fields = ['title']
+    success_url = reverse_lazy('core:products')
+
+
+class ProductDelete(DeleteView):
+    model = Product
+    success_url = reverse_lazy('core:products')
 
 
 @login_required
