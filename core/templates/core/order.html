@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>This is order detail page</h1>
+    <h4>{{ object }}</h4>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Produkt</th>
+                <th>Kvantita</th>
+            </tr>
+        </thead>
+        {% for order_product in order_product_list %}
+            <tr>
+                <td>{{ order_product }}</td>
+                <td>{{ order_product.quantity }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+{% endblock %}

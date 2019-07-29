@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Zoznam produktov</h1>
+<ul>
+    {% for product in object_list %}
+        <li><a href="{% url 'core:product' slug=product.slug %}">{{ product }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
