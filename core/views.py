@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -54,7 +55,7 @@ class ProductDelete(DeleteView):
 #     }
 #     return render(request, 'core/customers.html', context)
 
-
+# ============================
 class CustomerView(ListView):
     model = Customer
     template_name = 'core/customers.html'
@@ -82,15 +83,24 @@ class CustomerDelete(DeleteView):
     success_url = reverse_lazy('core:customers')
 
 
-
-
-
-
-
-
+# ============================
 class OrderView(ListView):
     model = Order
     template_name = 'core/orders.html'
+
+
+class OrderCreate(CreateView):
+    model = Order
+    fields = ['customer']
+    # success_url = reverse_lazy('core:orders')
+
+    def get_form(self, *args, **kwargs):
+        form = super(OrderCreate, self).get_form(*args, **kwargs)
+        form.fields['customer'].queryset = Customer.objects.all()
+        return form
+
+    def get_success_url(self):
+        return reverse('core:order-detail', kwargs={'pk': self.object.id})
 
 
 class OrderDetailView(DetailView):
@@ -102,3 +112,49 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['order_product_list'] = OrderProduct.objects.filter(order_id=self.get_object().id)
         return context
+
+
+class OrderProductCreate(CreateView):
+    model = OrderProduct
+    fields = ['product', 'quantity']
+
+    def form_valid(self, form):
+        form.instance.order = Order.objects.get(id=self.kwargs['pk'])
+        return super(OrderProductCreate, self).form_valid(form)
+
+    def get_success_url(self):
+        pk = self.kwargs['pk']
+        return reverse_lazy('core:order-detail', kwargs={'pk': pk})
+
+
+class OrderProductDelete(DeleteView):
+    model = OrderProduct
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        order_id = self.kwargs['pk']
+        order_product_id = self.kwargs['opk']
+
+        order = Order.objects.get(id=order_id)
+        queryset = OrderProduct.objects.get(order_id=order_id, id=order_product_id)
+
+        if not queryset or not order:
+            raise Http404
+
+        context = {
+            'order': order,
+            'product': queryset
+        }
+
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        order_id = self.kwargs['pk']
+        order_product_id = self.kwargs['opk']
+
+        order_product = OrderProduct.objects.filter(order_id=order_id, id=order_product_id)
+        order_product.delete()
+
+        return HttpResponseRedirect(reverse('core:order-detail', kwargs={'pk': order_id}))

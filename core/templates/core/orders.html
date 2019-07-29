@@ -2,7 +2,19 @@
 
 {% block content %}
     <h1>Zoznam objednavok</h1>
+    <br><br>
+    <a href="{% url 'core:order-create' %}">Nova objednavka</a>
+    <br><br>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>Objednavka</th>
+        </tr>
+        </thead>
         {% for order in object_list %}
-        <li><a href="{% url 'core:order' slug=order.slug %}">{{ order }}</a></li>
-    {% endfor %}
+            <tr>
+                <td><a href="{% url 'core:order-detail' order.id %}">{{ order }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

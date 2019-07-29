@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Order Product Delete</h1>
+<form method="post">{% csrf_token %}
+    Odstranit produkt <b>{{ object.product }}</b> z objednavky <b>{{ object.order }}</b>?
+    <br><br>
+    <input type="submit" value="Odstranit" />
+</form>
+{% endblock %}
+
+

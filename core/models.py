@@ -24,7 +24,6 @@ class Product(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    slug = models.SlugField(default='default')
 
     def __str__(self):
         return f'Objednavka #{self.id} pre {self.customer.name}'

@@ -3,17 +3,28 @@
 {% block content %}
     <h1>This is order detail page</h1>
     <h4>{{ object }}</h4>
+    <br><br>
+    <a href="{% url "core:order-product-create" object.id %}">Pridať produkt</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="#">Označiť ako odoslanú</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="#">Zmazať objednávku</a>
+    <br><br>
     <table class="table table-bordered">
         <thead class="thead-light">
             <tr>
                 <th>Produkt</th>
                 <th>Kvantita</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
         {% for order_product in order_product_list %}
             <tr>
                 <td>{{ order_product }}</td>
                 <td>{{ order_product.quantity }}</td>
+                <td>edit</td>
+                <td><a href="{% url "core:order-product-delete" pk=order_product.order.id opk=order_product.id %}">delete</a></td>
             </tr>
         {% endfor %}
     </table>

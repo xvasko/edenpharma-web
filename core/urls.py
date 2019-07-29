@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 from .views import ProductView, ProductDetailView, CustomerView, OrderView, OrderDetailView, ProductCreate, \
-    ProductUpdate, ProductDelete, CustomerCreate, CustomerDetailView, CustomerUpdate, CustomerDelete
+    ProductUpdate, ProductDelete, CustomerCreate, CustomerDetailView, CustomerUpdate, CustomerDelete, OrderCreate, \
+    OrderProductDelete, OrderProductCreate
 
 app_name = 'core'
 
@@ -20,5 +21,9 @@ urlpatterns = [
     path('customer/<int:pk>/delete', CustomerDelete.as_view(), name='customer-delete'),
 
     path('orders/', OrderView.as_view(), name='orders'),
-    path('orders/<slug>', OrderDetailView.as_view(), name='order')
+    path('order/create/', OrderCreate.as_view(), name='order-create'),
+    path('order/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('order/<int:pk>/order-product/create', OrderProductCreate.as_view(), name='order-product-create'),
+    path('order/<int:pk>/order-product/<int:opk>/', OrderProductDelete.as_view(), name='order-product-delete'),
+
 ]
