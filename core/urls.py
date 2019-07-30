@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .views import ProductView, ProductDetailView, CustomerView, OrderView, OrderDetailView, ProductCreate, \
     ProductUpdate, ProductDelete, CustomerCreate, CustomerDetailView, CustomerUpdate, CustomerDelete, OrderCreate, \
-    OrderProductDelete, OrderProductCreate
+    OrderProductDelete, OrderProductCreate, OrderDelete, OrderProductUpdate
 
 app_name = 'core'
 
@@ -23,7 +23,10 @@ urlpatterns = [
     path('orders/', OrderView.as_view(), name='orders'),
     path('order/create/', OrderCreate.as_view(), name='order-create'),
     path('order/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('order/<int:pk>/delete', OrderDelete.as_view(), name='order-delete'),
+
     path('order/<int:pk>/order-product/create', OrderProductCreate.as_view(), name='order-product-create'),
-    path('order/<int:pk>/order-product/<int:opk>/', OrderProductDelete.as_view(), name='order-product-delete'),
+    path('order/<int:pk>/order-product/<int:opk>/update', OrderProductUpdate.as_view(), name='order-product-update'),
+    path('order/<int:pk>/order-product/<int:opk>/delete', OrderProductDelete.as_view(), name='order-product-delete'),
 
 ]

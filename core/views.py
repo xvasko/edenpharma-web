@@ -114,6 +114,11 @@ class OrderDetailView(DetailView):
         return context
 
 
+class OrderDelete(DeleteView):
+    model = Order
+    success_url = reverse_lazy('core:orders')
+
+
 class OrderProductCreate(CreateView):
     model = OrderProduct
     fields = ['product', 'quantity']
@@ -125,6 +130,30 @@ class OrderProductCreate(CreateView):
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse_lazy('core:order-detail', kwargs={'pk': pk})
+
+
+class OrderProductUpdate(UpdateView):
+    model = OrderProduct
+    fields = ['product', 'quantity']
+
+    def get_success_url(self):
+        pk = self.kwargs['pk']
+        return reverse_lazy('core:order-detail', kwargs={'pk': pk})
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        order_id = self.kwargs['pk']
+        order_product_id = self.kwargs['opk']
+
+        order = Order.objects.get(id=order_id)
+        queryset = OrderProduct.objects.get(order_id=order_id, id=order_product_id)
+
+        if not queryset or not order:
+            raise Http404
+
+        return queryset
 
 
 class OrderProductDelete(DeleteView):

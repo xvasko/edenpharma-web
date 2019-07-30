@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>This is order detail page</h1>
-    <h4>{{ object }}</h4>
-    <br><br>
+    <br>
+    <h1>{{ object }}</h1>
+    <br>
     <a href="{% url "core:order-product-create" object.id %}">Pridať produkt</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="#">Označiť ako odoslanú</a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="#">Zmazať objednávku</a>
+    <a href="{% url "core:order-delete" object.id %}">Zmazať objednávku</a>
     <br><br>
     <table class="table table-bordered">
         <thead class="thead-light">
@@ -23,7 +21,7 @@
             <tr>
                 <td>{{ order_product }}</td>
                 <td>{{ order_product.quantity }}</td>
-                <td>edit</td>
+                <td><a href="{% url "core:order-product-update" pk=order_product.order.id opk=order_product.id %}">edit</a></td>
                 <td><a href="{% url "core:order-product-delete" pk=order_product.order.id opk=order_product.id %}">delete</a></td>
             </tr>
         {% endfor %}
