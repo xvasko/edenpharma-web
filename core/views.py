@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from core.models import Product, Customer, Order, OrderProduct
@@ -13,12 +13,38 @@ def index(request):
     return render(request, 'core/index.html')
 
 
-# @login_required
-# def products(request):
-#     context = {
-#         'products': Product.objects.all()
-#     }
-#     return render(request, 'core/products.html', context)
+class CustomerRow:
+    def __init__(self, customer_name, products):
+        self.customer_name = customer_name
+        self.products = products
+
+
+class OverviewView(TemplateView):
+    context_object_name = 'context'
+    template_name = 'core/overview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OverviewView, self).get_context_data(**kwargs)
+        context['products'] = Product.objects.all()
+        # context['customers'] = Customer.objects.all()
+
+        num_of_customers = len(Customer.objects.all())
+        num_of_products = len(Product.objects.all())
+        context['customers'] = [None] * num_of_customers
+
+        for i, customer in enumerate(Customer.objects.all()):
+            context['customers'][i] = CustomerRow(customer.name, [0] * num_of_products)
+            for j, product in enumerate(Product.objects.all()):
+                for order in Order.objects.filter(customer_id=customer.id):
+                    for order_product in OrderProduct.objects.filter(order_id=order.id, product_id=product.id):
+                        context['customers'][i].products[j] += order_product.quantity
+
+        for customer in context['customers']:
+            print(customer)
+            print(customer.customer_name)
+            print(customer.products)
+
+        return context
 
 
 class ProductView(ListView):
@@ -92,6 +118,7 @@ class OrderView(ListView):
 class OrderCreate(CreateView):
     model = Order
     fields = ['customer']
+
     # success_url = reverse_lazy('core:orders')
 
     def get_form(self, *args, **kwargs):

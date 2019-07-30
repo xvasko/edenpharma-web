@@ -20,6 +20,9 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'core:orders' %}">Objednávky</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:overview' %}">Prehľad</a>
+        </li>
     </ul>
     {% if user.is_authenticated %}
         <ul class="navbar-nav ml-auto">

@@ -2,12 +2,15 @@ from django.urls import path
 from . import views
 from .views import ProductView, ProductDetailView, CustomerView, OrderView, OrderDetailView, ProductCreate, \
     ProductUpdate, ProductDelete, CustomerCreate, CustomerDetailView, CustomerUpdate, CustomerDelete, OrderCreate, \
-    OrderProductDelete, OrderProductCreate, OrderDelete, OrderProductUpdate
+    OrderProductDelete, OrderProductCreate, OrderDelete, OrderProductUpdate, OverviewView
 
 app_name = 'core'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('overview/', OverviewView.as_view(), name='overview'),
+
+
     path('products/', ProductView.as_view(), name='products'),
     path('product/create/', ProductCreate.as_view(), name='product-create'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),

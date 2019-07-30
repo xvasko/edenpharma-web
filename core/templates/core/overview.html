@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>OVERVIEW</h1>
+
+    <table class="table table-sm table-bordered" style="display: block !important; overflow-x: auto!important; white-space: nowrap!important;">
+
+        <tr>
+            <td class="table-secondary"></td>
+            {% for product in products %}
+                <th style="word-wrap: break-word;min-width: 140px;max-width: 140px; white-space: normal !important;" class="table-primary">
+                        {{ product }}
+                </th>
+            {% endfor %}
+        </tr>
+
+        {% for customer in customers %}
+            <tr>
+
+                <th class="table-danger">{{ customer.customer_name }}</th>
+                {% for product in customer.products %}
+
+                    <th class="table-default">{{ product }}</th>
+
+                {% endfor %}
+
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+
+
+
+{% endblock %}
