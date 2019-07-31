@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>This is product detail page</h1>
-    <p>{{ object }}</p>
+    <br>
+    <h1>{{ object.name }}</h1>
+    <br>
+    <a href="{% url "core:customer-update" object.id %}">Edit</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="{% url "core:customer-delete" object.id %}">Delete</a>
+    <br><br>
+    <h4>Adresa</h4>
+    <p>Ulica: <b>{{ object.street }}</b></p>
+    <p>Mesto: <b>{{ object.city }}</b></p>
+    <p>PSČ:   <b>{{ object.zip }}</b></p>
+    <h4>Kontakt</h4>
+    <p>Telefón: <b>{{ object.phone_number }}</b></p>
+    <h4>Objednávky</h4>
+    <br>
+    <table class="table table-bordered">
+    <thead class="thead-light">
+    <tr>
+        <th>Objednavka</th>
+    </tr>
+    </thead>
+    {% for order in orders %}
+        <tr>
+            <td><a href="{% url 'core:order-detail' order.id %}">{{ order }}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+
 {% endblock %}

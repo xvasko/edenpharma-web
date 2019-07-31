@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Zoznam produktov</h1>
-    <br><br>
+    <br>
+    <h1>Produkty</h1>
+    <br>
     <a href="{% url 'core:product-create' %}">Nový produkt</a>
     <br><br>
     <table class="table table-bordered">
-        <thead class="thead-light">
         <tr>
-            <th>Produkt</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th class="table-primary">Produkt</th>
+            <th class="table-primary">Edit</th>
+            <th class="table-primary">Delete</th>
         </tr>
-        </thead>
+
         {% for product in object_list %}
             <tr>
                 <td><a href="{% url 'core:product-detail' product.id %}">{{ product }}</a></td>

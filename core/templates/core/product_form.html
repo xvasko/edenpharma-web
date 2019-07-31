@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>Vytvorit novy produkt</h1>
+    <br>
+    {% if is_create %}
+        <h1>Vytvoriť nový produkt</h1>
+    {% else %}
+        <h1>Upraviť produkt</h1>
+    {% endif %}
+    <br>
     <form method="post">
     {% csrf_token %}
     {{ form|crispy }}

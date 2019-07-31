@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Customer Delete</h1>
-<form method="post">{% csrf_token %}
-    Ste si isty ze chcete odstranit zakaznika "{{ object }}" ?
-    <input type="submit" value="Submit" />
-</form>
+    <br>
+    <h1>Odstránenie zákazníka</h1>
+    <br>
+    <form method="post">{% csrf_token %}
+        Odstrániť zákazníka <b>{{ object }}</b>?<br>
+        Budú odstránené všetky zákazníkove objednávky. <br><br>
+        <input type="submit" value="Submit"/>
+    </form>
 {% endblock %}
 
 

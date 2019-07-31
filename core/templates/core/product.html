@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>This is product detail page</h1>
-    <p>{{ object }}</p>
+    <br>
+    <h1>{{ object.title }}</h1>
+    <br>
+    <a href="{% url "core:product-update" object.id %}">Edit</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="{% url "core:product-delete" object.id %}">Delete</a>
+    <br><br>
+    <p>Cena: <b>{{ object.price }}€</b></p>
 {% endblock %}

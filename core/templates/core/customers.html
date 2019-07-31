@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Zoznam zákazníkov</h1>
-    <br><br>
+    <br>
+    <h1>Zákazníci</h1>
+    <br>
     <a href="{% url 'core:customer-create' %}">Nový zákazník</a>
     <br><br>
     <table class="table table-bordered">
-        <thead class="thead-light">
+
         <tr>
-            <th>Zákazník</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th class="table-danger">Zákazník</th>
+            <th class="table-danger">Edit</th>
+            <th class="table-danger">Delete</th>
         </tr>
-        </thead>
+
         {% for customer in object_list %}
             <tr>
                 <td><a href="{% url 'core:customer-detail' customer.id %}">{{ customer }}</a></td>

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Zoznam objednavok</h1>
-    <br><br>
-    <a href="{% url 'core:order-create' %}">Nova objednavka</a>
+    <br>
+    <h1>Objednávky</h1>
+    <br>
+    <a href="{% url 'core:order-create' %}">Nová objednávka</a>
     <br><br>
     <table class="table table-bordered">
         <thead class="thead-light">

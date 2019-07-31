@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Product Delete</h1>
-<form method="post">{% csrf_token %}
-    Ste si isty ze chcete odstranit produkt "{{ object }}" ?
-    <input type="submit" value="Submit" />
-</form>
+    <br>
+    <h1>Odstránenie produktu</h1>
+    <br>
+    <form method="post">{% csrf_token %}
+        Odstrániť produkt <b>{{ object }}</b>? <br>
+        Produkt bude odstránený zo všetkých objednávok. <br> <br>
+        <input type="submit" value="Delete"/>
+    </form>
 {% endblock %}
 
 

@@ -26,7 +26,6 @@ class OverviewView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(OverviewView, self).get_context_data(**kwargs)
         context['products'] = Product.objects.all()
-        # context['customers'] = Customer.objects.all()
 
         num_of_customers = len(Customer.objects.all())
         num_of_products = len(Product.objects.all())
@@ -59,14 +58,26 @@ class ProductDetailView(DetailView):
 
 class ProductCreate(CreateView):
     model = Product
-    fields = ['title']
+    fields = ['title', 'price']
     success_url = reverse_lazy('core:products')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_create'] = True
+        return context
 
 
 class ProductUpdate(UpdateView):
     model = Product
-    fields = ['title']
-    success_url = reverse_lazy('core:products')
+    fields = ['title', 'price']
+
+    def get_success_url(self):
+        return reverse('core:product-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_create'] = False
+        return context
 
 
 class ProductDelete(DeleteView):
@@ -91,17 +102,35 @@ class CustomerDetailView(DetailView):
     model = Customer
     template_name = 'core/customer.html'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['orders'] = Order.objects.filter(customer_id=self.kwargs['pk'])
+        return context
+
 
 class CustomerCreate(CreateView):
     model = Customer
-    fields = ['name']
+    fields = ['name', 'city', 'street', 'zip', 'phone_number']
     success_url = reverse_lazy('core:customers')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_create'] = True
+        return context
 
 
 class CustomerUpdate(UpdateView):
     model = Customer
-    fields = ['name']
-    success_url = reverse_lazy('core:customers')
+    fields = ['name', 'city', 'street', 'zip', 'phone_number']
+
+    def get_success_url(self):
+        return reverse('core:customer-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_create'] = False
+        return context
 
 
 class CustomerDelete(DeleteView):

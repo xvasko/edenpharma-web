@@ -4,6 +4,10 @@ from django.urls import reverse
 
 class Customer(models.Model):
     name = models.CharField(max_length=128)
+    street = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=128, blank=True)
+    zip = models.CharField(max_length=128, blank=True)
+    phone_number = models.CharField(max_length=15, blank=True)
 
     def __str__(self):
         return self.name
@@ -14,6 +18,7 @@ class Customer(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=128)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
     def __str__(self):
         return self.title

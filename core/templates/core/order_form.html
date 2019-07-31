@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>Vytvorit novu objednavku</h1>
-    <form method="post">
+    <br>
+    <h1>Vytvoriť novú objednávku</h1>
+    <br>
     {% csrf_token %}
     {{ form|crispy }}
     <br>
