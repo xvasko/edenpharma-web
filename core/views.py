@@ -1,6 +1,7 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -19,7 +20,7 @@ class CustomerRow:
         self.products = products
 
 
-class OverviewView(TemplateView):
+class OverviewView(LoginRequiredMixin, TemplateView):
     context_object_name = 'context'
     template_name = 'core/overview.html'
 
@@ -46,17 +47,16 @@ class OverviewView(TemplateView):
         return context
 
 
-class ProductView(ListView):
+class ProductView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'core/products.html'
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'core/product.html'
 
-
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
     fields = ['title', 'price']
     success_url = reverse_lazy('core:products')
@@ -67,7 +67,7 @@ class ProductCreate(CreateView):
         return context
 
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(LoginRequiredMixin, UpdateView):
     model = Product
     fields = ['title', 'price']
 
@@ -80,25 +80,17 @@ class ProductUpdate(UpdateView):
         return context
 
 
-class ProductDelete(DeleteView):
+class ProductDelete(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('core:products')
 
 
-# @login_required
-# def customers(request):
-#     context = {
-#         'customers': Customer.objects.all()
-#     }
-#     return render(request, 'core/customers.html', context)
-
-# ============================
-class CustomerView(ListView):
+class CustomerView(LoginRequiredMixin,ListView):
     model = Customer
     template_name = 'core/customers.html'
 
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'core/customer.html'
 
@@ -109,7 +101,7 @@ class CustomerDetailView(DetailView):
         return context
 
 
-class CustomerCreate(CreateView):
+class CustomerCreate(LoginRequiredMixin,CreateView):
     model = Customer
     fields = ['name', 'city', 'street', 'zip', 'phone_number']
     success_url = reverse_lazy('core:customers')
@@ -120,7 +112,7 @@ class CustomerCreate(CreateView):
         return context
 
 
-class CustomerUpdate(UpdateView):
+class CustomerUpdate(LoginRequiredMixin, UpdateView):
     model = Customer
     fields = ['name', 'city', 'street', 'zip', 'phone_number']
 
@@ -133,49 +125,59 @@ class CustomerUpdate(UpdateView):
         return context
 
 
-class CustomerDelete(DeleteView):
+class CustomerDelete(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = reverse_lazy('core:customers')
 
 
 # ============================
-class OrderView(ListView):
+class OrderView(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'core/orders.html'
 
 
-class OrderCreate(CreateView):
+class OrderCreate(LoginRequiredMixin, CreateView):
     model = Order
     fields = ['customer']
-
-    # success_url = reverse_lazy('core:orders')
 
     def get_form(self, *args, **kwargs):
         form = super(OrderCreate, self).get_form(*args, **kwargs)
         form.fields['customer'].queryset = Customer.objects.all()
         return form
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(OrderCreate, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('core:order-detail', kwargs={'pk': self.object.id})
 
 
-class OrderDetailView(DetailView):
+from django.utils import timezone
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     template_name = 'core/order.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
+        created_at = Order.objects.get(id=self.kwargs['pk']).created_at
+        if created_at is not None:
+            context['created_at_formatted'] = timezone.localtime(created_at).strftime("%d.%m.%Y %H:%M")
+        else:
+            context['created_at_formatted'] = None
         context['order_product_list'] = OrderProduct.objects.filter(order_id=self.get_object().id)
         return context
 
 
-class OrderDelete(DeleteView):
+class OrderDelete(LoginRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('core:orders')
 
 
-class OrderProductCreate(CreateView):
+class OrderProductCreate(LoginRequiredMixin, CreateView):
     model = OrderProduct
     fields = ['product', 'quantity']
 
@@ -188,7 +190,7 @@ class OrderProductCreate(CreateView):
         return reverse_lazy('core:order-detail', kwargs={'pk': pk})
 
 
-class OrderProductUpdate(UpdateView):
+class OrderProductUpdate(LoginRequiredMixin, UpdateView):
     model = OrderProduct
     fields = ['product', 'quantity']
 
@@ -212,7 +214,7 @@ class OrderProductUpdate(UpdateView):
         return queryset
 
 
-class OrderProductDelete(DeleteView):
+class OrderProductDelete(LoginRequiredMixin, DeleteView):
     model = OrderProduct
 
     def get_object(self, queryset=None):

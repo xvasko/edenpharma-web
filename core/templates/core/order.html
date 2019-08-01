@@ -8,6 +8,8 @@
     &nbsp;&nbsp;&nbsp;
     <a href="{% url "core:order-delete" object.id %}">Zmazať objednávku</a>
     <br><br>
+    <p>Objednávku vytvoril <b>{{ object.user }}</b></p>
+    <p>Dátum vytvorenia <b>{{ created_at_formatted }}</b></p>
     <table class="table table-bordered">
         <thead class="thead-light">
             <tr>

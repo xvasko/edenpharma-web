@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
-
+{% load auth_extras %}
 {% block content %}
     <br>
     <h1>Produkty</h1>
     <br>
-    <a href="{% url 'core:product-create' %}">Nový produkt</a>
-    <br><br>
+
+        <a href="{% url 'core:product-create' %}">Nový produkt</a>
+        <br><br>
+
+
     <table class="table table-bordered">
         <tr>
             <th class="table-primary">Produkt</th>

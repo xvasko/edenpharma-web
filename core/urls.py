@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import path, include
 from . import views
 from .views import ProductView, ProductDetailView, CustomerView, OrderView, OrderDetailView, ProductCreate, \
@@ -14,10 +15,10 @@ urlpatterns = [
 
 
     path('products/', ProductView.as_view(), name='products'),
-    path('product/create/', ProductCreate.as_view(), name='product-create'),
+    path('product/create/', permission_required('core.product.can_create')(ProductCreate.as_view()), name='product-create'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('product/<int:pk>/update', ProductUpdate.as_view(), name='product-update'),
-    path('product/<int:pk>/delete', ProductDelete.as_view(), name='product-delete'),
+    path('product/<int:pk>/delete', permission_required('core.product.can_delete')(ProductDelete.as_view()), name='product-delete'),
 
     path('customers/', CustomerView.as_view(), name='customers'),
     path('customer/create/', CustomerCreate.as_view(), name='customer-create'),

@@ -9,11 +9,11 @@
     {% endif %}
     <br>
     <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <br>
-    <input type="submit" value="Submit">
-</form>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <br>
+        <input type="submit" value="Submit">
+    </form>
 {% endblock %}
 
 
