@@ -4,9 +4,13 @@
     <br>
     <h1>{{ object.name }}</h1>
     <br>
-    <a href="{% url "core:customer-update" object.id %}">Edit</a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="{% url "core:customer-delete" object.id %}">Delete</a>
+
+    {% if is_auth_user_owner %}
+        <a href="{% url "core:customer-update" object.id %}">Edit</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="{% url "core:customer-delete" object.id %}">Delete</a>
+    {% endif %}
+
     <br><br>
     <h4>Adresa</h4>
     <p>Ulica: <b>{{ object.street }}</b></p>

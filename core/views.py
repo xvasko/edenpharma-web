@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
@@ -56,6 +56,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'core/product.html'
 
+
 class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
     fields = ['title', 'price']
@@ -85,7 +86,7 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('core:products')
 
 
-class CustomerView(LoginRequiredMixin,ListView):
+class CustomerView(LoginRequiredMixin, ListView):
     model = Customer
     template_name = 'core/customers.html'
 
@@ -95,13 +96,13 @@ class CustomerDetailView(LoginRequiredMixin, DetailView):
     template_name = 'core/customer.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
+        context['is_auth_user_owner'] = self.get_object().user.id == self.request.user.id
         context['orders'] = Order.objects.filter(customer_id=self.kwargs['pk'])
         return context
 
 
-class CustomerCreate(LoginRequiredMixin,CreateView):
+class CustomerCreate(LoginRequiredMixin, CreateView):
     model = Customer
     fields = ['name', 'city', 'street', 'zip', 'phone_number']
     success_url = reverse_lazy('core:customers')
@@ -111,8 +112,12 @@ class CustomerCreate(LoginRequiredMixin,CreateView):
         context['is_create'] = True
         return context
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(CustomerCreate, self).form_valid(form)
 
-class CustomerUpdate(LoginRequiredMixin, UpdateView):
+
+class CustomerUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Customer
     fields = ['name', 'city', 'street', 'zip', 'phone_number']
 
@@ -124,10 +129,16 @@ class CustomerUpdate(LoginRequiredMixin, UpdateView):
         context['is_create'] = False
         return context
 
+    def test_func(self):
+        return self.get_object().user.id == self.request.user.id
 
-class CustomerDelete(LoginRequiredMixin, DeleteView):
+
+class CustomerDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Customer
     success_url = reverse_lazy('core:customers')
+
+    def test_func(self):
+        return self.get_object().user.id == self.request.user.id
 
 
 # ============================

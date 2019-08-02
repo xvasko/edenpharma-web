@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
-
+{% load auth_extras %}
 {% block content %}
     <br>
     <h1>{{ object.title }}</h1>
     <br>
-    <a href="{% url "core:product-update" object.id %}">Edit</a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="{% url "core:product-delete" object.id %}">Delete</a>
-    <br><br>
+
+    {% if request.user|has_group:"admin" %}
+        <a href="{% url "core:product-update" object.id %}">Edit</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="{% url "core:product-delete" object.id %}">Delete</a>
+        <br><br>
+    {% endif %}
+
     <p>Cena: <b>{{ object.price }}€</b></p>
 {% endblock %}

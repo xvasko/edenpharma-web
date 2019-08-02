@@ -1,11 +1,12 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
 
 class Customer(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     street = models.CharField(max_length=128, blank=True)
     city = models.CharField(max_length=128, blank=True)
@@ -21,7 +22,7 @@ class Customer(models.Model):
         if not self.id:
             self.created_at = timezone.now()
         self.updated_at = timezone.now()
-        return super(Order, self).save(*args, **kwargs)
+        return super(Customer, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('core:customer', kwargs={'pk': self.id})

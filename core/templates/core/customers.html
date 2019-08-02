@@ -10,15 +10,13 @@
 
         <tr>
             <th class="table-danger">Zákazník</th>
-            <th class="table-danger">Edit</th>
-            <th class="table-danger">Delete</th>
+            <th class="table-danger" style="white-space: nowrap; width:1%;">Vytvorený používateľom</th>
         </tr>
 
         {% for customer in object_list %}
             <tr>
                 <td><a href="{% url 'core:customer-detail' customer.id %}">{{ customer }}</a></td>
-                <td><a href="{% url "core:customer-update" customer.id %}">edit</a></td>
-                <td><a href="{% url "core:customer-delete" customer.id %}">delete</a></td>
+                <td>{{ customer.user }}</td>
             </tr>
         {% endfor %}
     </table>

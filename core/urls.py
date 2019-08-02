@@ -15,10 +15,10 @@ urlpatterns = [
 
 
     path('products/', ProductView.as_view(), name='products'),
-    path('product/create/', permission_required('core.product.can_create')(ProductCreate.as_view()), name='product-create'),
+    path('product/create/', permission_required('core.product.can_create', raise_exception=True)(ProductCreate.as_view()), name='product-create'),
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
-    path('product/<int:pk>/update', ProductUpdate.as_view(), name='product-update'),
-    path('product/<int:pk>/delete', permission_required('core.product.can_delete')(ProductDelete.as_view()), name='product-delete'),
+    path('product/<int:pk>/update', permission_required('core.update_product', raise_exception=True)(ProductUpdate.as_view()), name='product-update'),
+    path('product/<int:pk>/delete', permission_required('core.delete_product', raise_exception=True)(ProductDelete.as_view()), name='product-delete'),
 
     path('customers/', CustomerView.as_view(), name='customers'),
     path('customer/create/', CustomerCreate.as_view(), name='customer-create'),

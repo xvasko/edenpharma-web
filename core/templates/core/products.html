@@ -5,22 +5,21 @@
     <h1>Produkty</h1>
     <br>
 
+    {% if request.user|has_group:"admin" %}
         <a href="{% url 'core:product-create' %}">Nový produkt</a>
         <br><br>
-
+    {% endif %}
 
     <table class="table table-bordered">
         <tr>
             <th class="table-primary">Produkt</th>
-            <th class="table-primary">Edit</th>
-            <th class="table-primary">Delete</th>
+            <th class="table-primary">Cena</th>
         </tr>
 
         {% for product in object_list %}
             <tr>
                 <td><a href="{% url 'core:product-detail' product.id %}">{{ product }}</a></td>
-                <td><a href="{% url "core:product-update" product.id %}">edit</a></td>
-                <td><a href="{% url "core:product-delete" product.id %}">delete</a></td>
+                <td>{{ product.price }}€</td>
             </tr>
         {% endfor %}
     </table>
