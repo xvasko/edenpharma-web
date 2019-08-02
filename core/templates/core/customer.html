@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-
+{% load auth_extras %}
 {% block content %}
     <br>
     <h1>{{ object.name }}</h1>
     <br>
 
-    {% if is_auth_user_owner %}
+    {% if is_auth_user_owner or request.user|has_group:"admin" %}
         <a href="{% url "core:customer-update" object.id %}">Edit</a>
         &nbsp;&nbsp;&nbsp;
         <a href="{% url "core:customer-delete" object.id %}">Delete</a>

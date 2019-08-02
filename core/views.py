@@ -5,8 +5,13 @@ from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.utils import timezone
 
 from core.models import Product, Customer, Order, OrderProduct
+
+
+def is_user_admin(self):
+    return self.request.user.groups.filter(name='admin').exists()
 
 
 @login_required
@@ -130,6 +135,8 @@ class CustomerUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return context
 
     def test_func(self):
+        if is_user_admin(self):
+            return True
         return self.get_object().user.id == self.request.user.id
 
 
@@ -138,6 +145,8 @@ class CustomerDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('core:customers')
 
     def test_func(self):
+        if is_user_admin(self):
+            return True
         return self.get_object().user.id == self.request.user.id
 
 
@@ -145,6 +154,11 @@ class CustomerDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class OrderView(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'core/orders.html'
+
+    def get_queryset(self):
+        if is_user_admin(self):
+            return Order.objects.all()
+        return Order.objects.filter(user_id=self.request.user.id)
 
 
 class OrderCreate(LoginRequiredMixin, CreateView):
@@ -164,10 +178,7 @@ class OrderCreate(LoginRequiredMixin, CreateView):
         return reverse('core:order-detail', kwargs={'pk': self.object.id})
 
 
-from django.utils import timezone
-
-
-class OrderDetailView(LoginRequiredMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Order
     template_name = 'core/order.html'
 
@@ -182,13 +193,23 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context['order_product_list'] = OrderProduct.objects.filter(order_id=self.get_object().id)
         return context
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return self.get_object().user.id == self.request.user.id
 
-class OrderDelete(LoginRequiredMixin, DeleteView):
+
+class OrderDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('core:orders')
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return self.get_object().user.id == self.request.user.id
 
-class OrderProductCreate(LoginRequiredMixin, CreateView):
+
+class OrderProductCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = OrderProduct
     fields = ['product', 'quantity']
 
@@ -200,8 +221,13 @@ class OrderProductCreate(LoginRequiredMixin, CreateView):
         pk = self.kwargs['pk']
         return reverse_lazy('core:order-detail', kwargs={'pk': pk})
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return Order.objects.get(id=self.kwargs['pk']).user.id == self.request.user.id
 
-class OrderProductUpdate(LoginRequiredMixin, UpdateView):
+
+class OrderProductUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = OrderProduct
     fields = ['product', 'quantity']
 
@@ -224,8 +250,13 @@ class OrderProductUpdate(LoginRequiredMixin, UpdateView):
 
         return queryset
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return Order.objects.get(id=self.kwargs['pk']).user.id == self.request.user.id
 
-class OrderProductDelete(LoginRequiredMixin, DeleteView):
+
+class OrderProductDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = OrderProduct
 
     def get_object(self, queryset=None):
@@ -256,3 +287,8 @@ class OrderProductDelete(LoginRequiredMixin, DeleteView):
         order_product.delete()
 
         return HttpResponseRedirect(reverse('core:order-detail', kwargs={'pk': order_id}))
+
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return Order.objects.get(id=self.kwargs['pk']).user.id == self.request.user.id
