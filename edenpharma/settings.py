@@ -20,12 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')gi^dagl1v(!*nn1$1jwe+d^evhwg-#u6co$wef4ti(im-kwl&'
+# SECRET_KEY = ')gi^dagl1v(!*nn1$1jwe+d^evhwg-#u6co$wef4ti(im-kwl&'
+os.environ.get('DJANGO_EDENPHARMA_SECRET_KEY=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1']
+ALLOWED_HOSTS = ['edenpharma.herokuapp.com', '10.0.2.2', '127.0.0.1']
 
 
 # Application definition
