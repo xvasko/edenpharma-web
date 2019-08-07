@@ -62,7 +62,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = 'core/product.html'
 
 
-class ProductCreate(LoginRequiredMixin, CreateView):
+class ProductCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     fields = ['title', 'price']
     success_url = reverse_lazy('core:products')
@@ -72,8 +72,13 @@ class ProductCreate(LoginRequiredMixin, CreateView):
         context['is_create'] = True
         return context
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return False
 
-class ProductUpdate(LoginRequiredMixin, UpdateView):
+
+class ProductUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     fields = ['title', 'price']
 
@@ -85,10 +90,20 @@ class ProductUpdate(LoginRequiredMixin, UpdateView):
         context['is_create'] = False
         return context
 
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return False
 
-class ProductDelete(LoginRequiredMixin, DeleteView):
+
+class ProductDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('core:products')
+
+    def test_func(self):
+        if is_user_admin(self):
+            return True
+        return False
 
 
 class CustomerView(LoginRequiredMixin, ListView):
